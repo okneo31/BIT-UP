@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTradeStore } from '@/stores/tradeStore';
 import { TRADING_PAIRS, TIMEFRAMES } from '@/lib/constants';
 
@@ -14,11 +14,17 @@ export default function CandleChart() {
 
   const pair = TRADING_PAIRS.find(p => p.symbol === currentPair);
 
+  // Responsive chart height
+  const getChartHeight = useCallback(() => {
+    if (typeof window === 'undefined') return 600;
+    return Math.max(500, window.innerHeight - 260);
+  }, []);
+
   useEffect(() => {
     const initChart = async () => {
       if (!chartContainerRef.current) return;
 
-      const { createChart, ColorType, CandlestickSeries } = await import('lightweight-charts');
+      const { createChart, ColorType, CandlestickSeries, CrosshairMode } = await import('lightweight-charts');
 
       if (chartRef.current) {
         chartRef.current.remove();
@@ -28,25 +34,63 @@ export default function CandleChart() {
         layout: {
           background: { type: ColorType.Solid, color: '#0b0e11' },
           textColor: '#848e9c',
-          fontSize: 12,
+          fontSize: 13,
+          fontFamily: "'Inter', system-ui, sans-serif",
         },
         grid: {
-          vertLines: { color: '#1e2329' },
-          horzLines: { color: '#1e2329' },
+          vertLines: { color: 'rgba(42, 46, 57, 0.6)' },
+          horzLines: { color: 'rgba(42, 46, 57, 0.6)' },
         },
         crosshair: {
-          mode: 0,
+          mode: CrosshairMode.Normal,
+          vertLine: {
+            width: 1,
+            color: 'rgba(224, 227, 235, 0.2)',
+            style: 0,
+            labelBackgroundColor: '#363A45',
+          },
+          horzLine: {
+            width: 1,
+            color: 'rgba(224, 227, 235, 0.2)',
+            style: 0,
+            labelBackgroundColor: '#363A45',
+          },
         },
         rightPriceScale: {
           borderColor: '#2b3139',
+          scaleMargins: { top: 0.1, bottom: 0.1 },
+          entireTextOnly: true,
         },
         timeScale: {
           borderColor: '#2b3139',
           timeVisible: true,
           secondsVisible: false,
+          rightOffset: 5,
+          barSpacing: 8,
+          minBarSpacing: 3,
+          fixLeftEdge: false,
+          fixRightEdge: false,
+        },
+        handleScroll: {
+          mouseWheel: true,
+          pressedMouseMove: true,
+          horzTouchDrag: true,
+          vertTouchDrag: true,
+        },
+        handleScale: {
+          axisPressedMouseMove: {
+            time: true,
+            price: true,
+          },
+          axisDoubleClickReset: {
+            time: true,
+            price: true,
+          },
+          mouseWheel: true,
+          pinch: true,
         },
         width: chartContainerRef.current.clientWidth,
-        height: 500,
+        height: getChartHeight(),
       });
 
       const series = chart.addSeries(CandlestickSeries, {
@@ -62,8 +106,11 @@ export default function CandleChart() {
       seriesRef.current = series;
 
       const handleResize = () => {
-        if (chartContainerRef.current) {
-          chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+        if (chartContainerRef.current && chartRef.current) {
+          chartRef.current.applyOptions({
+            width: chartContainerRef.current.clientWidth,
+            height: getChartHeight(),
+          });
         }
       };
       window.addEventListener('resize', handleResize);
@@ -81,7 +128,7 @@ export default function CandleChart() {
         chartRef.current = null;
       }
     };
-  }, []);
+  }, [getChartHeight]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,7 +139,6 @@ export default function CandleChart() {
         const tf = TIMEFRAMES.find(t => t.value === timeframe);
         const days = tf?.days || 1;
 
-        // BTU-USDT uses internal trade data, others use CoinGecko
         const url = currentPair === 'BTU-USDT'
           ? `/api/coingecko/ohlc?pair=BTU-USDT&days=${days}`
           : pair?.coingeckoId
@@ -120,16 +166,16 @@ export default function CandleChart() {
   }, [currentPair, timeframe, pair?.coingeckoId]);
 
   return (
-    <div className="bg-bg-secondary rounded-lg border border-border overflow-hidden">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-border">
-        <div className="flex gap-1">
+    <div className="bg-bg-secondary rounded-lg border border-border overflow-hidden h-full flex flex-col">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-border shrink-0">
+        <div className="flex gap-1.5">
           {TIMEFRAMES.map((tf) => (
             <button
               key={tf.value}
               onClick={() => setTimeframe(tf.value)}
-              className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
+              className={`px-3.5 py-1.5 text-sm font-semibold rounded transition-colors ${
                 timeframe === tf.value
-                  ? 'bg-bg-tertiary text-accent'
+                  ? 'bg-accent/15 text-accent'
                   : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
               }`}
             >
@@ -137,9 +183,9 @@ export default function CandleChart() {
             </button>
           ))}
         </div>
-        {loading && <span className="text-sm text-text-third">Loading...</span>}
+        {loading && <span className="text-sm text-text-third animate-pulse">Loading...</span>}
       </div>
-      <div ref={chartContainerRef} className="w-full" />
+      <div ref={chartContainerRef} className="w-full flex-1" />
     </div>
   );
 }

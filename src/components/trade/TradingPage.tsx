@@ -72,11 +72,11 @@ export default function TradingPage({ pair }: TradingPageProps) {
   const pairConfig = TRADING_PAIRS.find(p => p.symbol === pair);
 
   return (
-    <div className="h-[calc(100vh-64px)]">
+    <div className="h-[calc(100vh-60px)]">
       {/* Top bar with pair info */}
-      <div className="flex items-center gap-8 px-6 py-3 bg-bg-secondary border-b border-border">
+      <div className="flex items-center gap-10 px-6 py-3 bg-bg-secondary border-b border-border">
         <PairSelector />
-        <div className="flex items-center gap-8 text-xs overflow-x-auto">
+        <div className="flex items-center gap-10 overflow-x-auto">
           <div>
             <span className={`text-2xl font-bold ${priceChange24h >= 0 ? 'text-green' : 'text-red'}`}>
               {currentPrice > 0 ? `$${currentPrice.toLocaleString(undefined, { maximumFractionDigits: pairConfig?.decimals || 2 })}` : '--'}
@@ -84,21 +84,21 @@ export default function TradingPage({ pair }: TradingPageProps) {
           </div>
           <div>
             <span className="text-xs text-text-third">24h Change</span>
-            <p className={`text-sm ${priceChange24h >= 0 ? 'text-green' : 'text-red'}`}>
+            <p className={`text-base font-medium ${priceChange24h >= 0 ? 'text-green' : 'text-red'}`}>
               {priceChange24h ? `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%` : '--'}
             </p>
           </div>
           <div>
             <span className="text-xs text-text-third">24h High</span>
-            <p className="text-sm text-text-primary">{high24h ? `$${high24h.toLocaleString()}` : '--'}</p>
+            <p className="text-base text-text-primary">{high24h ? `$${high24h.toLocaleString()}` : '--'}</p>
           </div>
           <div>
             <span className="text-xs text-text-third">24h Low</span>
-            <p className="text-sm text-text-primary">{low24h ? `$${low24h.toLocaleString()}` : '--'}</p>
+            <p className="text-base text-text-primary">{low24h ? `$${low24h.toLocaleString()}` : '--'}</p>
           </div>
           <div>
             <span className="text-xs text-text-third">24h Volume</span>
-            <p className="text-sm text-text-primary">{volume24h ? `$${(volume24h / 1e6).toFixed(2)}M` : '--'}</p>
+            <p className="text-base text-text-primary">{volume24h ? `$${(volume24h / 1e6).toFixed(2)}M` : '--'}</p>
           </div>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default function TradingPage({ pair }: TradingPageProps) {
         </div>
 
         {/* Order Book */}
-        <div className="col-span-6 lg:col-span-4 xl:col-span-2 bg-bg-primary p-1">
+        <div className="col-span-6 lg:col-span-4 xl:col-span-2 bg-bg-primary p-1 overflow-auto">
           <OrderBook />
         </div>
 

@@ -27,56 +27,57 @@ export default function Header() {
   };
 
   return (
-    <header className="h-16 bg-bg-secondary border-b border-border flex items-center px-6 sticky top-0 z-40">
-      {/* Logo */}
-      <Link href="/trade/BTC-USDT" className="flex items-center gap-2.5 mr-12 shrink-0">
-        <span className="text-accent text-2xl font-bold">▲</span>
-        <span className="text-text-primary text-xl font-bold tracking-wide">BitUp</span>
-      </Link>
+    <header className="h-[60px] bg-bg-secondary border-b border-border flex items-center justify-between px-8 sticky top-0 z-40">
+      {/* Left: Logo + Nav */}
+      <div className="flex items-center">
+        <Link href="/trade/BTC-USDT" className="flex items-center gap-3 mr-16 shrink-0">
+          <span className="text-accent text-3xl font-bold">▲</span>
+          <span className="text-text-primary text-2xl font-bold tracking-wide">BitUp</span>
+        </Link>
 
-      {/* Navigation */}
-      <nav className="flex items-center gap-2">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`px-4 py-2 text-[15px] font-medium rounded-lg transition-colors ${
-              isActive(item.href)
-                ? 'text-accent bg-accent/10'
-                : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
-            }`}
-          >
-            <span className="mr-1.5">{item.icon}</span>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+        <nav className="flex items-center gap-8">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`text-base font-medium transition-colors whitespace-nowrap ${
+                isActive(item.href)
+                  ? 'text-accent'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              <span className="mr-2">{item.icon}</span>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
 
-      {/* Right side - User section */}
-      <div className="ml-auto flex items-center gap-4">
+      {/* Right: User */}
+      <div className="flex items-center gap-6">
         {user ? (
           <>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-bg-tertiary rounded-lg">
-              <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center">
-                <span className="text-accent text-sm font-bold">
+            <div className="flex items-center gap-3 px-4 py-2 bg-bg-tertiary rounded-lg">
+              <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
+                <span className="text-accent text-base font-bold">
                   {(user.nickname || user.email || 'U')[0].toUpperCase()}
                 </span>
               </div>
-              <span className="text-sm text-text-primary font-medium hidden sm:block">
+              <span className="text-base text-text-primary font-medium hidden sm:block">
                 {user.nickname || user.email}
               </span>
             </div>
-            <Button variant="ghost" size="md" onClick={() => { signOut(); router.push('/login'); }}>
+            <Button variant="ghost" size="lg" onClick={() => { signOut(); router.push('/login'); }}>
               Logout
             </Button>
           </>
         ) : (
           <>
             <Link href="/login">
-              <Button variant="ghost" size="md">Login</Button>
+              <Button variant="ghost" size="lg">Login</Button>
             </Link>
             <Link href="/signup">
-              <Button variant="primary" size="md">Sign Up</Button>
+              <Button variant="primary" size="lg">Sign Up</Button>
             </Link>
           </>
         )}
