@@ -102,7 +102,7 @@ export default function OrderForm() {
       <div className="flex border-b border-border">
         <button
           onClick={() => setSide('buy')}
-          className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
+          className={`flex-1 py-3 text-base font-medium transition-colors ${
             side === 'buy' ? 'text-green border-b-2 border-green' : 'text-text-secondary'
           }`}
         >
@@ -110,7 +110,7 @@ export default function OrderForm() {
         </button>
         <button
           onClick={() => setSide('sell')}
-          className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
+          className={`flex-1 py-3 text-base font-medium transition-colors ${
             side === 'sell' ? 'text-red border-b-2 border-red' : 'text-text-secondary'
           }`}
         >
@@ -129,7 +129,7 @@ export default function OrderForm() {
           variant="pills"
         />
 
-        <div className="flex justify-between text-xs">
+        <div className="flex justify-between text-sm">
           <span className="text-text-secondary">Available</span>
           <span className="text-text-primary">
             {availableBalance.toLocaleString(undefined, { maximumFractionDigits: 6 })}{' '}
@@ -164,7 +164,7 @@ export default function OrderForm() {
                 key={pct}
                 type="button"
                 onClick={() => handlePercentage(pct)}
-                className="flex-1 text-xs py-1 bg-bg-tertiary text-text-secondary hover:text-text-primary rounded transition-colors"
+                className="flex-1 text-sm py-1 bg-bg-tertiary text-text-secondary hover:text-text-primary rounded transition-colors"
               >
                 {pct * 100}%
               </button>

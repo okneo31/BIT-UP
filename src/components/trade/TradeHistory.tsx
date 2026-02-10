@@ -41,16 +41,16 @@ export default function TradeHistory() {
 
   return (
     <div className="bg-bg-secondary rounded-lg border border-border h-full">
-      <div className="p-2 border-b border-border">
-        <h3 className="text-xs font-medium text-text-secondary">Recent Trades</h3>
+      <div className="p-3 border-b border-border">
+        <h3 className="text-sm font-medium text-text-secondary">Recent Trades</h3>
       </div>
-      <div className="text-[11px]">
+      <div className="text-xs">
         <div className="grid grid-cols-3 px-2 py-1 text-text-third border-b border-border">
           <span>Price(USDT)</span>
           <span className="text-right">Amount</span>
           <span className="text-right">Time</span>
         </div>
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[450px] overflow-y-auto">
           {recentTrades.length === 0 ? (
             <div className="text-center py-8 text-text-third text-xs">No trades yet</div>
           ) : (
@@ -58,7 +58,7 @@ export default function TradeHistory() {
               const prevPrice = i < recentTrades.length - 1 ? Number(recentTrades[i + 1]?.price || 0) : 0;
               const isUp = Number(trade.price) >= prevPrice;
               return (
-                <div key={trade.id} className="grid grid-cols-3 px-2 py-0.5 hover:bg-bg-tertiary">
+                <div key={trade.id} className="grid grid-cols-3 px-2 py-1 hover:bg-bg-tertiary">
                   <span className={isUp ? 'text-green' : 'text-red'}>{formatPrice(Number(trade.price))}</span>
                   <span className="text-right text-text-primary">{formatQty(Number(trade.quantity))}</span>
                   <span className="text-right text-text-secondary">{formatTime(trade.created_at)}</span>

@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTradeStore } from '@/stores/tradeStore';
 import { TRADING_PAIRS, TIMEFRAMES } from '@/lib/constants';
-import Tabs from '@/components/ui/Tabs';
 
 export default function CandleChart() {
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -16,8 +15,6 @@ export default function CandleChart() {
   const pair = TRADING_PAIRS.find(p => p.symbol === currentPair);
 
   useEffect(() => {
-    let mounted = true;
-
     const initChart = async () => {
       if (!chartContainerRef.current) return;
 
@@ -31,6 +28,7 @@ export default function CandleChart() {
         layout: {
           background: { type: ColorType.Solid, color: '#0b0e11' },
           textColor: '#848e9c',
+          fontSize: 12,
         },
         grid: {
           vertLines: { color: '#1e2329' },
@@ -45,9 +43,10 @@ export default function CandleChart() {
         timeScale: {
           borderColor: '#2b3139',
           timeVisible: true,
+          secondsVisible: false,
         },
         width: chartContainerRef.current.clientWidth,
-        height: 400,
+        height: 500,
       });
 
       const series = chart.addSeries(CandlestickSeries, {
@@ -77,7 +76,6 @@ export default function CandleChart() {
     initChart();
 
     return () => {
-      mounted = false;
       if (chartRef.current) {
         chartRef.current.remove();
         chartRef.current = null;
@@ -113,19 +111,28 @@ export default function CandleChart() {
 
   return (
     <div className="bg-bg-secondary rounded-lg border border-border overflow-hidden">
-      <div className="flex items-center justify-between p-2 border-b border-border">
-        <Tabs
-          tabs={TIMEFRAMES.map(tf => ({ label: tf.label, value: tf.value }))}
-          active={timeframe}
-          onChange={setTimeframe}
-          variant="pills"
-        />
-        {loading && <span className="text-xs text-text-third">Loading...</span>}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-border">
+        <div className="flex gap-1">
+          {TIMEFRAMES.map((tf) => (
+            <button
+              key={tf.value}
+              onClick={() => setTimeframe(tf.value)}
+              className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
+                timeframe === tf.value
+                  ? 'bg-bg-tertiary text-accent'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+              }`}
+            >
+              {tf.label}
+            </button>
+          ))}
+        </div>
+        {loading && <span className="text-sm text-text-third">Loading...</span>}
       </div>
       <div ref={chartContainerRef} className="w-full" />
       {!pair?.coingeckoId && (
         <div className="absolute inset-0 flex items-center justify-center bg-bg-secondary/80">
-          <p className="text-text-secondary text-sm">BTU chart data from internal trades</p>
+          <p className="text-text-secondary">BTU chart data from internal trades</p>
         </div>
       )}
     </div>

@@ -46,7 +46,7 @@ export default function PairSelector() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 text-lg font-bold text-text-primary hover:bg-bg-tertiary rounded transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-xl font-bold text-text-primary hover:bg-bg-tertiary rounded transition-colors"
       >
         {currentPair.replace('-', '/')}
         <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,7 +57,7 @@ export default function PairSelector() {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full left-0 mt-1 w-72 bg-bg-secondary border border-border rounded-lg shadow-lg z-20 overflow-hidden">
+          <div className="absolute top-full left-0 mt-1 w-80 bg-bg-secondary border border-border rounded-lg shadow-lg z-20 overflow-hidden">
             <div className="p-2 border-b border-border">
               <p className="text-xs text-text-secondary px-2">Trading Pairs</p>
             </div>
@@ -75,11 +75,11 @@ export default function PairSelector() {
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-text-primary">{pair.base}</span>
+                      <span className="text-base font-medium text-text-primary">{pair.base}</span>
                       <span className="text-xs text-text-third">/ {pair.quote}</span>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-text-primary">{price ? `$${price.toLocaleString()}` : '--'}</p>
+                      <p className="text-base text-text-primary">{price ? `$${price.toLocaleString()}` : '--'}</p>
                       <p className={`text-xs ${change >= 0 ? 'text-green' : 'text-red'}`}>
                         {change ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}%` : '--'}
                       </p>

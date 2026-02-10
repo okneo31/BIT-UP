@@ -62,10 +62,10 @@ export default function OrderBook() {
 
   return (
     <div className="bg-bg-secondary rounded-lg border border-border h-full">
-      <div className="p-2 border-b border-border">
-        <h3 className="text-xs font-medium text-text-secondary">Order Book</h3>
+      <div className="p-3 border-b border-border">
+        <h3 className="text-sm font-medium text-text-secondary">Order Book</h3>
       </div>
-      <div className="text-[11px]">
+      <div className="text-xs">
         <div className="grid grid-cols-3 px-2 py-1 text-text-third border-b border-border">
           <span>Price(USDT)</span>
           <span className="text-right">Amount</span>
@@ -73,9 +73,9 @@ export default function OrderBook() {
         </div>
 
         {/* Asks (sell orders) - reversed to show lowest at bottom */}
-        <div className="max-h-[200px] overflow-hidden flex flex-col-reverse">
+        <div className="max-h-[250px] overflow-hidden flex flex-col-reverse">
           {orderBook.asks.map((ask, i) => (
-            <div key={`ask-${i}`} className="grid grid-cols-3 px-2 py-0.5 relative hover:bg-bg-tertiary cursor-pointer">
+            <div key={`ask-${i}`} className="grid grid-cols-3 px-2 py-1 relative hover:bg-bg-tertiary cursor-pointer">
               <div
                 className="absolute right-0 top-0 bottom-0 bg-red-bg"
                 style={{ width: `${(ask.quantity / maxAskQty) * 100}%` }}
@@ -89,15 +89,15 @@ export default function OrderBook() {
 
         {/* Current price */}
         <div className="px-2 py-1.5 border-y border-border bg-bg-primary">
-          <span className={`text-sm font-bold ${currentPrice > 0 ? 'text-green' : 'text-text-primary'}`}>
+          <span className={`text-lg font-bold ${currentPrice > 0 ? 'text-green' : 'text-text-primary'}`}>
             {currentPrice > 0 ? formatPrice(currentPrice) : '--'}
           </span>
         </div>
 
         {/* Bids (buy orders) */}
-        <div className="max-h-[200px] overflow-hidden">
+        <div className="max-h-[250px] overflow-hidden">
           {orderBook.bids.map((bid, i) => (
-            <div key={`bid-${i}`} className="grid grid-cols-3 px-2 py-0.5 relative hover:bg-bg-tertiary cursor-pointer">
+            <div key={`bid-${i}`} className="grid grid-cols-3 px-2 py-1 relative hover:bg-bg-tertiary cursor-pointer">
               <div
                 className="absolute right-0 top-0 bottom-0 bg-green-bg"
                 style={{ width: `${(bid.quantity / maxBidQty) * 100}%` }}

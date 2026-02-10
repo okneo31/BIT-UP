@@ -16,9 +16,9 @@ export default function Header() {
   }, [initialized, initialize]);
 
   const navItems = [
-    { label: 'Trade', href: '/trade/BTC-USDT' },
-    { label: 'Wallet', href: '/wallet' },
-    { label: 'Launchpool', href: '/launchpool' },
+    { label: 'Trade', href: '/trade/BTC-USDT', icon: '📊' },
+    { label: 'Wallet', href: '/wallet', icon: '💰' },
+    { label: 'Launchpool', href: '/launchpool', icon: '🚀' },
   ];
 
   const isActive = (href: string) => {
@@ -27,45 +27,56 @@ export default function Header() {
   };
 
   return (
-    <header className="h-14 bg-bg-secondary border-b border-border flex items-center px-4 sticky top-0 z-40">
-      <Link href="/trade/BTC-USDT" className="flex items-center gap-2 mr-8">
-        <span className="text-accent text-xl font-bold">▲</span>
-        <span className="text-text-primary text-lg font-bold">BitUp</span>
+    <header className="h-16 bg-bg-secondary border-b border-border flex items-center px-6 sticky top-0 z-40">
+      {/* Logo */}
+      <Link href="/trade/BTC-USDT" className="flex items-center gap-2.5 mr-12 shrink-0">
+        <span className="text-accent text-2xl font-bold">▲</span>
+        <span className="text-text-primary text-xl font-bold tracking-wide">BitUp</span>
       </Link>
 
-      <nav className="flex items-center gap-1">
+      {/* Navigation */}
+      <nav className="flex items-center gap-2">
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`px-3 py-1.5 text-sm rounded transition-colors ${
+            className={`px-4 py-2 text-[15px] font-medium rounded-lg transition-colors ${
               isActive(item.href)
-                ? 'text-accent'
-                : 'text-text-secondary hover:text-text-primary'
+                ? 'text-accent bg-accent/10'
+                : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
             }`}
           >
+            <span className="mr-1.5">{item.icon}</span>
             {item.label}
           </Link>
         ))}
       </nav>
 
-      <div className="ml-auto flex items-center gap-2">
+      {/* Right side - User section */}
+      <div className="ml-auto flex items-center gap-4">
         {user ? (
           <>
-            <span className="text-xs text-text-secondary hidden sm:block">
-              {user.nickname || user.email}
-            </span>
-            <Button variant="ghost" size="sm" onClick={() => { signOut(); router.push('/login'); }}>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-bg-tertiary rounded-lg">
+              <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center">
+                <span className="text-accent text-sm font-bold">
+                  {(user.nickname || user.email || 'U')[0].toUpperCase()}
+                </span>
+              </div>
+              <span className="text-sm text-text-primary font-medium hidden sm:block">
+                {user.nickname || user.email}
+              </span>
+            </div>
+            <Button variant="ghost" size="md" onClick={() => { signOut(); router.push('/login'); }}>
               Logout
             </Button>
           </>
         ) : (
           <>
             <Link href="/login">
-              <Button variant="ghost" size="sm">Login</Button>
+              <Button variant="ghost" size="md">Login</Button>
             </Link>
             <Link href="/signup">
-              <Button variant="primary" size="sm">Sign Up</Button>
+              <Button variant="primary" size="md">Sign Up</Button>
             </Link>
           </>
         )}

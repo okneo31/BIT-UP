@@ -52,39 +52,39 @@ export default function TradingPage({ pair }: TradingPageProps) {
   const pairConfig = TRADING_PAIRS.find(p => p.symbol === pair);
 
   return (
-    <div className="h-[calc(100vh-56px)]">
+    <div className="h-[calc(100vh-64px)]">
       {/* Top bar with pair info */}
-      <div className="flex items-center gap-6 px-4 py-2 bg-bg-secondary border-b border-border">
+      <div className="flex items-center gap-8 px-6 py-3 bg-bg-secondary border-b border-border">
         <PairSelector />
-        <div className="flex items-center gap-6 text-xs overflow-x-auto">
+        <div className="flex items-center gap-8 text-xs overflow-x-auto">
           <div>
-            <span className={`text-lg font-bold ${priceChange24h >= 0 ? 'text-green' : 'text-red'}`}>
+            <span className={`text-2xl font-bold ${priceChange24h >= 0 ? 'text-green' : 'text-red'}`}>
               {currentPrice > 0 ? `$${currentPrice.toLocaleString(undefined, { maximumFractionDigits: pairConfig?.decimals || 2 })}` : '--'}
             </span>
           </div>
           <div>
-            <span className="text-text-third">24h Change</span>
-            <p className={priceChange24h >= 0 ? 'text-green' : 'text-red'}>
+            <span className="text-xs text-text-third">24h Change</span>
+            <p className={`text-sm ${priceChange24h >= 0 ? 'text-green' : 'text-red'}`}>
               {priceChange24h ? `${priceChange24h >= 0 ? '+' : ''}${priceChange24h.toFixed(2)}%` : '--'}
             </p>
           </div>
           <div>
-            <span className="text-text-third">24h High</span>
-            <p className="text-text-primary">{high24h ? `$${high24h.toLocaleString()}` : '--'}</p>
+            <span className="text-xs text-text-third">24h High</span>
+            <p className="text-sm text-text-primary">{high24h ? `$${high24h.toLocaleString()}` : '--'}</p>
           </div>
           <div>
-            <span className="text-text-third">24h Low</span>
-            <p className="text-text-primary">{low24h ? `$${low24h.toLocaleString()}` : '--'}</p>
+            <span className="text-xs text-text-third">24h Low</span>
+            <p className="text-sm text-text-primary">{low24h ? `$${low24h.toLocaleString()}` : '--'}</p>
           </div>
           <div>
-            <span className="text-text-third">24h Volume</span>
-            <p className="text-text-primary">{volume24h ? `$${(volume24h / 1e6).toFixed(2)}M` : '--'}</p>
+            <span className="text-xs text-text-third">24h Volume</span>
+            <p className="text-sm text-text-primary">{volume24h ? `$${(volume24h / 1e6).toFixed(2)}M` : '--'}</p>
           </div>
         </div>
       </div>
 
       {/* Main grid */}
-      <div className="grid grid-cols-12 gap-px bg-border h-[calc(100%-52px)]">
+      <div className="grid grid-cols-12 gap-px bg-border h-[calc(100%-56px)]">
         {/* Chart */}
         <div className="col-span-12 lg:col-span-8 xl:col-span-6 bg-bg-primary p-1">
           <CandleChart />

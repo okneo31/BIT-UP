@@ -47,14 +47,14 @@ export default function OpenOrders() {
 
   return (
     <div className="bg-bg-secondary rounded-lg border border-border">
-      <div className="p-2 border-b border-border">
-        <h3 className="text-xs font-medium text-text-secondary">Open Orders ({openOrders.length})</h3>
+      <div className="p-3 border-b border-border">
+        <h3 className="text-sm font-medium text-text-secondary">Open Orders ({openOrders.length})</h3>
       </div>
       {openOrders.length === 0 ? (
         <div className="text-center py-6 text-text-third text-xs">No open orders</div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full text-sm">
             <thead>
               <tr className="text-text-third border-b border-border">
                 <th className="text-left px-3 py-2 font-normal">Pair</th>
