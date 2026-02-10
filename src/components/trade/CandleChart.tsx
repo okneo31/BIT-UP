@@ -9,7 +9,7 @@ export default function CandleChart() {
   const chartRef = useRef<any>(null);
   const seriesRef = useRef<any>(null);
   const { currentPair } = useTradeStore();
-  const [timeframe, setTimeframe] = useState('1d');
+  const [timeframe, setTimeframe] = useState('1h');
   const [loading, setLoading] = useState(true);
 
   const pair = TRADING_PAIRS.find(p => p.symbol === currentPair);
@@ -137,13 +137,15 @@ export default function CandleChart() {
 
       try {
         const tf = TIMEFRAMES.find(t => t.value === timeframe);
-        const days = tf?.days || 1;
+        const interval = tf?.interval || '1h';
+        const limit = tf?.limit || 500;
 
-        const url = currentPair === 'BTU-USDT'
-          ? `/api/coingecko/ohlc?pair=BTU-USDT&days=${days}`
-          : pair?.coingeckoId
-            ? `/api/coingecko/ohlc?coinId=${pair.coingeckoId}&days=${days}`
-            : null;
+        let url: string | null = null;
+        if (currentPair === 'BTU-USDT') {
+          url = `/api/coingecko/ohlc?pair=BTU-USDT&interval=${interval}&limit=${limit}`;
+        } else if (pair?.binanceSymbol) {
+          url = `/api/coingecko/ohlc?symbol=${pair.binanceSymbol}&interval=${interval}&limit=${limit}`;
+        }
 
         if (!url) return;
 
@@ -161,9 +163,11 @@ export default function CandleChart() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
-  }, [currentPair, timeframe, pair?.coingeckoId]);
+    // Shorter refresh for short timeframes, longer for daily
+    const refreshMs = timeframe === '1m' ? 5000 : timeframe === '5m' ? 10000 : 30000;
+    const timer = setInterval(fetchData, refreshMs);
+    return () => clearInterval(timer);
+  }, [currentPair, timeframe, pair?.binanceSymbol]);
 
   return (
     <div className="bg-bg-secondary rounded-lg border border-border overflow-hidden h-full flex flex-col">

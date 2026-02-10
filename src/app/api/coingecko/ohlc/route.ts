@@ -1,12 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getOHLC } from '@/lib/coingecko/client';
 import { createClient } from '@/lib/supabase/server';
+
+const BINANCE_API = 'https://api.binance.com/api/v3/klines';
+
+// Map interval string to milliseconds (for BTU candle aggregation)
+const INTERVAL_MS: Record<string, number> = {
+  '1m': 60 * 1000,
+  '5m': 5 * 60 * 1000,
+  '15m': 15 * 60 * 1000,
+  '30m': 30 * 60 * 1000,
+  '1h': 60 * 60 * 1000,
+  '4h': 4 * 60 * 60 * 1000,
+  '1d': 24 * 60 * 60 * 1000,
+};
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const coinId = searchParams.get('coinId');
-  const days = parseInt(searchParams.get('days') || '1', 10);
   const pair = searchParams.get('pair');
+  const binanceSymbol = searchParams.get('symbol');
+  const interval = searchParams.get('interval') || '1h';
+  const limit = parseInt(searchParams.get('limit') || '500', 10);
 
   // BTU-USDT: candle data from internal trades table
   if (pair === 'BTU-USDT') {
@@ -21,7 +34,8 @@ export async function GET(request: NextRequest) {
 
       if (!pairData) return NextResponse.json([]);
 
-      const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+      const intervalMs = INTERVAL_MS[interval] || 60 * 60 * 1000;
+      const since = new Date(Date.now() - limit * intervalMs).toISOString();
 
       const { data: trades } = await supabase
         .from('trades')
@@ -31,11 +45,6 @@ export async function GET(request: NextRequest) {
         .order('created_at', { ascending: true });
 
       if (!trades || trades.length === 0) return NextResponse.json([]);
-
-      let intervalMs: number;
-      if (days <= 2) intervalMs = 30 * 60 * 1000;
-      else if (days <= 14) intervalMs = 4 * 60 * 60 * 1000;
-      else intervalMs = 24 * 60 * 60 * 1000;
 
       const candles: { time: number; open: number; high: number; low: number; close: number }[] = [];
       let currentBucket = 0;
@@ -73,25 +82,35 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Other coins: CoinGecko API
-  if (!coinId) {
-    return NextResponse.json({ error: 'coinId is required' }, { status: 400 });
+  // Other coins: Binance public klines API (no API key needed)
+  if (!binanceSymbol) {
+    return NextResponse.json({ error: 'symbol is required' }, { status: 400 });
   }
 
   try {
-    const raw = await getOHLC(coinId, days);
-    const data = raw.map(([time, open, high, low, close]: number[]) => ({
-      time: Math.floor(time / 1000),
-      open,
-      high,
-      low,
-      close,
+    const url = `${BINANCE_API}?symbol=${binanceSymbol}&interval=${interval}&limit=${Math.min(limit, 1000)}`;
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Binance API error: ${res.status}`);
+    }
+
+    const raw = await res.json();
+
+    // Binance kline format: [openTime, open, high, low, close, volume, closeTime, ...]
+    const data = raw.map((k: any[]) => ({
+      time: Math.floor(Number(k[0]) / 1000),
+      open: parseFloat(k[1]),
+      high: parseFloat(k[2]),
+      low: parseFloat(k[3]),
+      close: parseFloat(k[4]),
     }));
+
     return NextResponse.json(data, {
-      headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' },
+      headers: { 'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=30' },
     });
   } catch (error) {
-    console.error('CoinGecko OHLC error:', error);
-    return NextResponse.json({ error: 'Failed to fetch OHLC data' }, { status: 500 });
+    console.error('Binance klines error:', error);
+    return NextResponse.json({ error: 'Failed to fetch klines data' }, { status: 500 });
   }
 }
