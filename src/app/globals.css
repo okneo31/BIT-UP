@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg-primary: #0b0e11;
+  --color-bg-secondary: #1e2329;
+  --color-bg-tertiary: #2b3139;
+  --color-bg-hover: #363c45;
+  --color-text-primary: #eaecef;
+  --color-text-secondary: #848e9c;
+  --color-text-third: #5e6673;
+  --color-accent: #f0b90b;
+  --color-accent-hover: #d4a30a;
+  --color-green: #0ecb81;
+  --color-green-hover: #0bb374;
+  --color-green-bg: rgba(14, 203, 129, 0.1);
+  --color-red: #f6465d;
+  --color-red-hover: #e03e54;
+  --color-red-bg: rgba(246, 70, 93, 0.1);
+  --color-border: #2b3139;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-bg-hover);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
