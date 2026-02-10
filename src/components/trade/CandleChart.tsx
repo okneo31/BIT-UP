@@ -85,13 +85,23 @@ export default function CandleChart() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!seriesRef.current || !pair?.coingeckoId) return;
+      if (!seriesRef.current) return;
       setLoading(true);
 
       try {
         const tf = TIMEFRAMES.find(t => t.value === timeframe);
         const days = tf?.days || 1;
-        const res = await fetch(`/api/coingecko/ohlc?coinId=${pair.coingeckoId}&days=${days}`);
+
+        // BTU-USDT uses internal trade data, others use CoinGecko
+        const url = currentPair === 'BTU-USDT'
+          ? `/api/coingecko/ohlc?pair=BTU-USDT&days=${days}`
+          : pair?.coingeckoId
+            ? `/api/coingecko/ohlc?coinId=${pair.coingeckoId}&days=${days}`
+            : null;
+
+        if (!url) return;
+
+        const res = await fetch(url);
         const data = await res.json();
 
         if (Array.isArray(data) && data.length > 0) {
@@ -105,7 +115,7 @@ export default function CandleChart() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 60000);
+    const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, [currentPair, timeframe, pair?.coingeckoId]);
 
@@ -130,11 +140,6 @@ export default function CandleChart() {
         {loading && <span className="text-sm text-text-third">Loading...</span>}
       </div>
       <div ref={chartContainerRef} className="w-full" />
-      {!pair?.coingeckoId && (
-        <div className="absolute inset-0 flex items-center justify-center bg-bg-secondary/80">
-          <p className="text-text-secondary">BTU chart data from internal trades</p>
-        </div>
-      )}
     </div>
   );
 }

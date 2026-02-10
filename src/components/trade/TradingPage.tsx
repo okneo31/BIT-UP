@@ -24,12 +24,32 @@ export default function TradingPage({ pair }: TradingPageProps) {
   useEffect(() => {
     const fetchMarketData = async () => {
       try {
+        const pairConfig = TRADING_PAIRS.find(p => p.symbol === pair);
+
+        if (pair === 'BTU-USDT') {
+          // BTU: get price from orderbook (best ask)
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: pairData } = await supabase
+            .from('trading_pairs').select('id').eq('symbol', 'BTU-USDT').single();
+          if (!pairData) return;
+
+          const { data: ob } = await supabase.rpc('get_orderbook', { p_pair_id: pairData.id, p_limit: 1 });
+          const bestAsk = ob?.asks?.[0]?.price ? Number(ob.asks[0].price) : 0;
+          const bestBid = ob?.bids?.[0]?.price ? Number(ob.bids[0].price) : 0;
+          const midPrice = bestAsk && bestBid ? (bestAsk + bestBid) / 2 : bestAsk || bestBid;
+
+          if (midPrice > 0) {
+            setMarketData({ price: midPrice, change: 0, high: midPrice * 1.05, low: midPrice * 0.95, volume: 0 });
+          }
+          return;
+        }
+
+        if (!pairConfig?.coingeckoId) return;
+
         const res = await fetch('/api/coingecko/markets');
         const data = await res.json();
         if (!Array.isArray(data)) return;
-
-        const pairConfig = TRADING_PAIRS.find(p => p.symbol === pair);
-        if (!pairConfig?.coingeckoId) return;
 
         const market = data.find((m: any) => m.id === pairConfig.coingeckoId);
         if (market) {
