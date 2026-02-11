@@ -17,12 +17,14 @@ export default function Header() {
 
   const navItems = [
     { label: 'Trade', href: '/trade/BTC-USDT', icon: '📊' },
+    { label: 'Futures', href: '/futures/BTCUSDT', icon: '📈' },
     { label: 'Wallet', href: '/wallet', icon: '💰' },
     { label: 'Launchpool', href: '/launchpool', icon: '🚀' },
   ];
 
   const isActive = (href: string) => {
     if (href.startsWith('/trade')) return pathname.startsWith('/trade');
+    if (href.startsWith('/futures')) return pathname.startsWith('/futures');
     return pathname === href;
   };
 

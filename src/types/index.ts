@@ -140,3 +140,75 @@ export interface CandleData {
   low: number;
   close: number;
 }
+
+// ==========================================
+// FUTURES TYPES
+// ==========================================
+
+export interface FuturesPair {
+  id: string;
+  symbol: string;
+  base_currency: string;
+  quote_currency: string;
+  max_leverage: number;
+  maintenance_margin_rate: number;
+  min_quantity: number;
+  tick_size: number;
+  is_active: boolean;
+  coingecko_id: string | null;
+}
+
+export type PositionSide = 'long' | 'short';
+export type MarginMode = 'cross' | 'isolated';
+export type FuturesOrderStatus = 'open' | 'partial' | 'filled' | 'cancelled';
+
+export interface FuturesPosition {
+  id: string;
+  user_id: string;
+  pair_id: string;
+  side: PositionSide;
+  leverage: number;
+  margin_mode: MarginMode;
+  entry_price: number;
+  quantity: number;
+  margin: number;
+  liquidation_price: number;
+  unrealized_pnl: number;
+  created_at: string;
+  updated_at: string;
+  futures_pairs?: FuturesPair;
+}
+
+export interface FuturesOrder {
+  id: string;
+  user_id: string;
+  pair_id: string;
+  side: OrderSide;
+  position_side: PositionSide;
+  type: OrderType;
+  price: number | null;
+  quantity: number;
+  filled_quantity: number;
+  leverage: number;
+  margin_mode: MarginMode;
+  reduce_only: boolean;
+  status: FuturesOrderStatus;
+  fee_amount: number;
+  created_at: string;
+  updated_at: string;
+  futures_pairs?: FuturesPair;
+}
+
+export interface FuturesTrade {
+  id: string;
+  pair_id: string;
+  buy_order_id: string;
+  sell_order_id: string;
+  buyer_id: string;
+  seller_id: string;
+  price: number;
+  quantity: number;
+  buyer_fee: number;
+  seller_fee: number;
+  created_at: string;
+}

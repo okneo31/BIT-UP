@@ -47,6 +47,25 @@ export const TIMEFRAMES = [
   { label: '1D', value: '1d', interval: '1d', limit: 200 },
 ] as const;
 
+// ==========================================
+// FUTURES CONSTANTS
+// ==========================================
+
+export const FUTURES_PAIRS = [
+  { symbol: 'BTCUSDT', base: 'BTC', quote: 'USDT', coingeckoId: 'bitcoin', binanceSymbol: 'BTCUSDT', decimals: 2, maxLeverage: 125 },
+  { symbol: 'ETHUSDT', base: 'ETH', quote: 'USDT', coingeckoId: 'ethereum', binanceSymbol: 'ETHUSDT', decimals: 2, maxLeverage: 100 },
+  { symbol: 'BNBUSDT', base: 'BNB', quote: 'USDT', coingeckoId: 'binancecoin', binanceSymbol: 'BNBUSDT', decimals: 2, maxLeverage: 75 },
+  { symbol: 'SOLUSDT', base: 'SOL', quote: 'USDT', coingeckoId: 'solana', binanceSymbol: 'SOLUSDT', decimals: 2, maxLeverage: 50 },
+  { symbol: 'XRPUSDT', base: 'XRP', quote: 'USDT', coingeckoId: 'ripple', binanceSymbol: 'XRPUSDT', decimals: 4, maxLeverage: 75 },
+  { symbol: 'DOGEUSDT', base: 'DOGE', quote: 'USDT', coingeckoId: 'dogecoin', binanceSymbol: 'DOGEUSDT', decimals: 5, maxLeverage: 50 },
+] as const;
+
+export const LEVERAGE_OPTIONS = [1, 2, 3, 5, 10, 20, 25, 50, 75, 100, 125] as const;
+
+export const FUTURES_FEE = 0.0004; // 0.04% taker fee
+export const FUTURES_MAKER_FEE = 0.0002; // 0.02% maker fee
+export const FUNDING_RATE = 0.0001; // 0.01% display only
+
 // Simulated wallet addresses per network
 export const NETWORK_INFO: Record<string, { name: string; network: string; confirmations: number }[]> = {
   BTC: [{ name: 'Bitcoin', network: 'BTC', confirmations: 3 }],
